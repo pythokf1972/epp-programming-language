@@ -1,4 +1,4 @@
-package hostdb;
+
 import java.util.Scanner;
 import java.util.Scanner;
 import java.io.*;
