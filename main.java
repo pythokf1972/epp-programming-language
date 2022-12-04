@@ -1,4 +1,6 @@
-
+package hostdb;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Scanner;
 import java.io.*;
@@ -12,7 +14,7 @@ public static void main(String[] args) throws Exception {
 		   //String x = s.nextLine();
 		   
 		   //gets file and checks if it is formatted to e format
-		   String x = "/home/andrew/Desktop/script.epp";
+		   String x = "/home/andrew/Desktop/replacer.epp";
 		   File myObj = new File(x);
 		   if(myObj.getName().contains(".epp"))
 		   {
@@ -23,7 +25,8 @@ public static void main(String[] args) throws Exception {
 		   String data = myReader.nextLine();
 		   String idk = "";
 		   String packages = "";
-		   String ifcase = ""; 
+		   String ifcase = "";
+		   String objneed = "";
 		   while (myReader.hasNextLine()) {
 		          
 					
@@ -42,12 +45,12 @@ public static void main(String[] args) throws Exception {
 		    	   if(!packages.contains("import java.util.Scanner;")) {
 		    	   packages += "\n" + "import java.util.Scanner;";
 		    	   }
-		    	   if(!idk.contains("Scanner s = new Scanner(System.in);")) {
-		    		   data = "Scanner s = new Scanner(System.in);"+ vartype +  varname + "=" + "s.nextLine()";
+		    	   if(!objneed.contains("Scanner s = new Scanner(System.in);")) {
+		    		   objneed += "\n" +  "Scanner s = new Scanner(System.in);";
 		    	   }
-		    	   else {
+		    	   
 		    	   data =  vartype +  varname + "=" + "s.nextLine()";
-		    	   }
+		    	   
 		    	   
 		       
 		       
@@ -107,7 +110,48 @@ public static void main(String[] args) throws Exception {
                    }
 		       }
 		       
-	
+		       //arrays syntax 
+		       if(data.contains("Array"))
+		       {
+		    	   String type = "";
+		    	   int count = data.indexOf("[");
+		    	   
+		    	   while(data.charAt(count) != ']' )
+		    	   {
+		    		   type+=data.charAt(count);
+		    		   count+=1;
+		    	   }
+		    	   String realtype = type.replace("[", "");
+		    	   String value =(data.substring(data.indexOf("="))).replaceAll("Array[" + realtype + "]", "").replaceAll("=","");
+		    	   String[] name = data.split(realtype);
+		    	   String arrname = name[1].replaceAll(value, "").replaceAll("=", "").replaceAll("]", "");
+		    	   String finalarr = realtype + "[] " + arrname + " = {" + value + "}" ;
+		    	   data=finalarr + ";";
+		    	   
+		   
+		       }
+		       //adding random into language
+		       //it is an array function ofc
+		      
+		    	  if(data.contains(".getRandom()"))
+		    	  {
+		    	   String arrname = "";
+		    	   int count = data.indexOf(".") - 1;
+		    	   while(data.charAt(count) != ' ')
+		    	   {
+		    		   arrname = data.charAt(count) + arrname ;
+		    		   count -=1;
+		    	   }
+		    	   System.out.println(arrname);
+		    	   if(!packages.contains("import java.util.Random; ")) {
+			    	   packages += "\n" + "import java.util.Random; ";
+			    	   }
+			    	   if(!objneed.contains("Random rnd = new Random();")) {
+			    		   objneed += "\n" + "Random rnd = new Random();";
+			    	   }
+			    	   data = data.replace(arrname+".getRandom()","")+ arrname+"[rnd.nextInt("+arrname+".length)]";	    	   
+		      }
+		      
 		       
 		       //or and statements
 		       /*if(data.contains("or"))
@@ -128,6 +172,10 @@ public static void main(String[] args) throws Exception {
 		       {
 		    	   idk+= data;
 		       }
+		       if(data.contains("Array"))
+		       {
+		    	   idk+=data+";";
+		       }
 		       
 		       data = myReader.nextLine();
 		       
@@ -143,7 +191,7 @@ public static void main(String[] args) throws Exception {
 			   haha -=1;
 		   }
 		
-		   String last = packages + "class "+ classname.replaceAll(".epp", "") +   "{ public static void main(String agrs[]){" + idk + "}}";
+		   String last = packages + "class "+ classname.replaceAll(".epp", "") +   "{ public static void main(String agrs[]){" +objneed+ idk + "}}";
 		     System.out.println(last);
              
 		     //creating the compiled epp to  java file
@@ -156,7 +204,7 @@ public static void main(String[] args) throws Exception {
              fw.flush();
 		     
 		     //compiling it into jvm/.class file
-		       String command = "javac " + compiled.getAbsolutePath();
+		     /*  String command = "javac " + compiled.getAbsolutePath();
 		     Runtime runtime = Runtime.getRuntime();
 		     Process process = runtime.exec(command);
 		     
@@ -165,7 +213,7 @@ public static void main(String[] args) throws Exception {
 		     {
 		    	 Process p2 = runtime.exec("rm " + compiled.getAbsolutePath());
 		    	 p2.waitFor();
-		     }
+		     }*/
 		   }
 		   
 		   
