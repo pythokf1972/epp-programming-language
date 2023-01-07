@@ -1,0 +1,2 @@
+echo "alias epp='sudo java -cp /lib/epp main'" >> ~/.bashrc
+source ~/.bashrc

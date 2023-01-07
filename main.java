@@ -1,225 +1,94 @@
-package hostdb;
-import java.util.ArrayList;
-import java.util.Random;
+import pack.epp.resources.compiler;
 import java.util.Scanner;
-import java.util.Scanner;
-import java.io.*;
-public class server {
+import pack.epp.resources.PackageManager;
+public class main{
 
+@SuppressWarnings("deprecation")
 public static void main(String[] args) throws Exception {	
+	String x = "";
+	compiler c = new compiler();
+	PackageManager pm = new PackageManager();	   
+	
+	//every if condition for the arguements passed on when running the compiler 
+if(args.length!=0)
+{	
+	if(args[0].contains("-run"))
+	{
+	   String path = args[1];
+	   c.execute(path,c.compile(path));
+	}	   
+	if(args[0].contains("-build"))
+	{
+	   String path = args[1];
+	   pm.build(path);
+	}
+	if(args[0].contains("-install"))
+	{
+	  String pack = args[1];
+	  pm.installPackage(pack);
+	}
+	if(args[0].contains("-help"))
+	{
+	  System.out.println("command : epp : used to open the epp compiler and compile epp files \n\n options: \n -run filepath: to compile and run epp file \n -build filepath: used to build epp packages/ get the file of the imported packages \n -install packname: to install an epp community package from github the package name should bbe like following: devgithubname/reponame \n -help: to display avialable options");
+	
+	}
+}	
+	
+	if(args.length == 0)
+	{	   
+		   
 		   Scanner s = new Scanner(System.in);
-		   
-		   //System.out.println("enter file name");
-		  
-		   //String x = s.nextLine();
-		   
-		   //gets file and checks if it is formatted to e format
-		   String x = "/home/andrew/Desktop/replacer.epp";
-		   File myObj = new File(x);
-		   if(myObj.getName().contains(".epp"))
+		   System.out.print("e++ programming language compiler version 1.0 ");
+		   System.out.println("\n"
+		   		+ "███████╗░░░░░░░░░░░░░░\n"
+		   		+ "██╔════╝░░██╗░░░░██╗░░\n"
+		   		+ "█████╗░░██████╗██████╗\n"
+		   		+ "██╔══╝░░╚═██╔═╝╚═██╔═╝\n"
+		   		+ "███████╗░░╚═╝░░░░╚═╝░░\n"
+		   		+ "╚══════╝░░░░░░░░░░░░░░\n");
+		   while(true)
 		   {
-		   //scanner for file 
-			   Scanner myReader = new Scanner(myObj);
-	       //for like while loop to go in each line and change it
-		   //to java
-		   String data = myReader.nextLine();
-		   String idk = "";
-		   String packages = "";
-		   String ifcase = "";
-		   String objneed = "";
-		   while (myReader.hasNextLine()) {
-		          
-					
-				//all conditions of the programming lang/syntax
-		       
-			   //the classic printing 
-			   if(data.contains("printE"))
-		       {
-		    	   data = data.replaceAll("printE", "System.out.println");
-		       }
-		       
-		       //taking user input 
-		       if(data.contains("input")) {
-		    	   String varname = data.substring(data.indexOf("input") + 5 , data.length());
-		    	   String vartype = data.substring(0, data.indexOf("input"));
-		    	   if(!packages.contains("import java.util.Scanner;")) {
-		    	   packages += "\n" + "import java.util.Scanner;";
-		    	   }
-		    	   if(!objneed.contains("Scanner s = new Scanner(System.in);")) {
-		    		   objneed += "\n" +  "Scanner s = new Scanner(System.in);";
-		    	   }
-		    	   
-		    	   data =  vartype +  varname + "=" + "s.nextLine()";
-		    	   
-		    	   
-		       
-		       
-		       }
-		       //if condition
-		       if(data.contains("if"))
-		       {
-		    	   String condition = data.replaceAll("if", "");
-                   if(condition.contains("{"))
-                   {
-		    	   String preparedif = "(" + condition.replace("{", "") + ")";
-		    	   String lastif =  "if" + preparedif + "{";
-		    	   data = lastif;
-                   }
-                   else
-                   {
-                	   String lastif =  "if" + "(" + condition + ")";
-    		    	  data = lastif;
-    		    	  
-                   }
-		    	  
-		       
-		       }
-		       //while loop
-		       if(data.contains("while"))
-		       {
-		    	   String condition = data.replaceAll("while", "");
-                   if(condition.contains("{"))
-                   {
-		    	   String preparedwhile = "(" + condition.replace("{", "") + ")";
-		    	   String lastwhile =  "while" + preparedwhile + "{";
-		    	   data = lastwhile;
-                   }
-                   else
-                   {
-                	   String lastwhile =  "while" + "(" + condition + ")";
-    		    	  data = lastwhile;
-    		    	  
-                   }
-		       }
-		       //for loops
-		       if(data.contains("for"))
-		       {
-		    	   String condition1 = data.replaceAll("for", "");
-                   String condition = condition1.replaceAll(",", ";");
-		    	   if(condition.contains("{"))
-                   {
-		    	   String preparedfor = "(" + condition.replace("{", "") + ")";
-		    	   String lastfor =  "for" + preparedfor + "{";
-		    	   data = lastfor;
-                   }
-                   else
-                   {
-                	   String lastfor =  "for" + "(" + condition + ")";
-    		    	  data = lastfor;
-    		    	  
-                   }
-		       }
-		       
-		       //arrays syntax 
-		       if(data.contains("Array"))
-		       {
-		    	   String type = "";
-		    	   int count = data.indexOf("[");
-		    	   
-		    	   while(data.charAt(count) != ']' )
-		    	   {
-		    		   type+=data.charAt(count);
-		    		   count+=1;
-		    	   }
-		    	   String realtype = type.replace("[", "");
-		    	   String value =(data.substring(data.indexOf("="))).replaceAll("Array[" + realtype + "]", "").replaceAll("=","");
-		    	   String[] name = data.split(realtype);
-		    	   String arrname = name[1].replaceAll(value, "").replaceAll("=", "").replaceAll("]", "");
-		    	   String finalarr = realtype + "[] " + arrname + " = {" + value + "}" ;
-		    	   data=finalarr + ";";
-		    	   
+		   System.out.print(">>>");
+		   String input = s.nextLine();
 		   
-		       }
-		       //adding random into language
-		       //it is an array function ofc
-		      
-		    	  if(data.contains(".getRandom()"))
-		    	  {
-		    	   String arrname = "";
-		    	   int count = data.indexOf(".") - 1;
-		    	   while(data.charAt(count) != ' ')
-		    	   {
-		    		   arrname = data.charAt(count) + arrname ;
-		    		   count -=1;
-		    	   }
-		    	   System.out.println(arrname);
-		    	   if(!packages.contains("import java.util.Random; ")) {
-			    	   packages += "\n" + "import java.util.Random; ";
-			    	   }
-			    	   if(!objneed.contains("Random rnd = new Random();")) {
-			    		   objneed += "\n" + "Random rnd = new Random();";
-			    	   }
-			    	   data = data.replace(arrname+".getRandom()","")+ arrname+"[rnd.nextInt("+arrname+".length)]";	    	   
-		      }
-		      
-		       
-		       //or and statements
-		       /*if(data.contains("or"))
-		       {
-		    	   data = data.replaceAll("or", "||");
-		       }
-		       if(data.contains("and"))
-		       {
-		    	   data = data.replaceAll("and", "&&");
-		       }*/
-		       
-		       //adding the line to the full code
-		       if(data !="" && !data.contains("if")&&!data.contains("{")&&!data.contains("}")&&!data.contains("while")&&!data.contains("else")&&!data.contains("for"))
-		       {
-		       idk+=data + ";";
-		       }
-		       else
-		       {
-		    	   idk+= data;
-		       }
-		       if(data.contains("Array"))
-		       {
-		    	   idk+=data+";";
-		       }
-		       
-		       data = myReader.nextLine();
-		       
-		      
-		      
-		      
-		      }
-		   String classname = "";
-		   int haha = x.length() - 1;
-		   while(x.charAt(haha)!='/')
+		   //the run command in order to run files
+		   if(input.contains("run"))
 		   {
-			   classname = x.charAt(haha) + classname;
-			   haha -=1;
-		   }
-		
-		   String last = packages + "class "+ classname.replaceAll(".epp", "") +   "{ public static void main(String agrs[]){" +objneed+ idk + "}}";
-		     System.out.println(last);
-             
-		     //creating the compiled epp to  java file
-		     File compiled = new File(x.replaceAll(".epp", ".java"));
-             compiled.createNewFile();
-             compiled.canWrite();
-             //writing the java file with its compiled text
-             FileWriter fw = new FileWriter(compiled);
-             fw.write(last);
-             fw.flush();
-		     
-		     //compiling it into jvm/.class file
-		     /*  String command = "javac " + compiled.getAbsolutePath();
-		     Runtime runtime = Runtime.getRuntime();
-		     Process process = runtime.exec(command);
-		     
-		     process.waitFor();
-		     if(process.isAlive() == false)
-		     {
-		    	 Process p2 = runtime.exec("rm " + compiled.getAbsolutePath());
-		    	 p2.waitFor();
-		     }*/
+             if(x=="")
+             {
+			    x = input.replaceAll("run ", "");
+             }
+			
+		   String compiled = c.compile(x);
+		   System.out.println(compiled);
+		   c.execute(x, compiled);
 		   }
 		   
-		   
-		   
-		   else {
-			   System.out.println("File isnt in the e++ programming language format aka .epp");
+		   //set path command used to set a file path in order to always run
+		   //great for working on a project like for running and testing without always having to put the path
+		   if(input.contains("set path"))
+		   {
+			   x = input.replaceAll("set path ", "");
+		   }
+		   //finally yes,a community package manager for github repos
+		   if(input.contains("install"))
+		   {
+			  
+			   pm.installPackage(input.replace("install ",""));
+			   
+		   }
+		   //the build command to build packages
+		   if(input.contains("build"))
+		   {
+			   if(x=="")
+	             {
+				    x = input.replaceAll("build ", "");
+	             }
+			   pm.build(x);
+			   
+			   
 		   }
 	}
+	}
+}
 }
